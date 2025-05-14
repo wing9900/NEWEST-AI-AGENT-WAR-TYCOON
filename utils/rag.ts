@@ -34,10 +34,21 @@ export async function queryPineconeAndGenerateResponse(query: string) {
       topK: 5,
       includeMetadata: true,
     })
+    
+    // Add debug logging for the response
+    console.log("🔍 RAG: Raw Pinecone response:", JSON.stringify(queryResponse, null, 2))
+    
+    if (!queryResponse || typeof queryResponse !== 'object') {
+      throw new Error(`Invalid Pinecone response: ${JSON.stringify(queryResponse)}`)
+    }
+
     console.log(`🔍 RAG: Pinecone query complete, received ${queryResponse.matches?.length || 0} matches`)
 
     // Extract relevant context from Pinecone results
     const matches = queryResponse.matches || []
+    if (!Array.isArray(matches)) {
+      throw new Error(`Invalid matches format: ${JSON.stringify(matches)}`)
+    }
     const relevantMatches = matches.filter((match) => match.score && match.score > 0.7)
     console.log(`🔍 RAG: Found ${relevantMatches.length} relevant matches with score > 0.7`)
 

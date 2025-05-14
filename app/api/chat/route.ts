@@ -34,6 +34,10 @@ export async function POST(req: NextRequest) {
         })
       } catch (ragError) {
         console.error("📝 API: RAG failed, falling back to direct OpenAI:", ragError)
+        console.error("📝 API: RAG error details:", {
+          message: ragError instanceof Error ? ragError.message : String(ragError),
+          stack: ragError instanceof Error ? ragError.stack : undefined
+        })
 
         // Continue to fallback
       }
